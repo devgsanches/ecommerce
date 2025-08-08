@@ -1,7 +1,9 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -21,6 +23,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { authClient } from '@/lib/auth-client'
 
 const formSchema = z.object({
   email: z.email({
@@ -42,8 +45,30 @@ export function SignInForm() {
     },
   })
 
-  function onSubmit(values: formValues) {
-    console.log(values)
+  const router = useRouter()
+
+  async function onSubmit(values: formValues) {
+    const { error } = await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+    })
+
+    if (error) {
+      if (error.code === 'INVALID_EMAIL_OR_PASSWORD') {
+        form.setError('email', {
+          message: '',
+        })
+        form.setError('password', {
+          message: 'E-mail ou senha inválidos.',
+        })
+        return toast.error('E-mail ou senha inválidos.')
+      }
+
+      toast.error('Erro ao fazer login.')
+    }
+
+    toast.success('Login realizado com sucesso.')
+    router.push('/')
   }
 
   return (
