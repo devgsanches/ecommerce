@@ -67,7 +67,6 @@ export function SignInForm() {
       toast.error('Erro ao fazer login.')
     }
 
-    toast.success('Login realizado com sucesso.')
     router.push('/')
   }
 
