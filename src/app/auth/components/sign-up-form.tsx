@@ -92,7 +92,10 @@ export function SignUpForm() {
     <Card>
       <CardHeader>
         <CardTitle className="mt-2">Crie sua conta</CardTitle>
-        <CardDescription>Crie sua conta para continuar.</CardDescription>
+        <CardDescription className="text-justify">
+          Conecte-se à BEWEAR e aproveite uma experiência feita pra quem se
+          veste com personalidade.
+        </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
         <div className="grid gap-3">
