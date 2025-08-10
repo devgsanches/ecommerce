@@ -1,5 +1,7 @@
 import Image from 'next/image'
 
+import { db } from '@/db'
+import { productTable, type productVariantTable } from '@/db/schema'
 import { categoryItems } from '@/utils/category-items'
 import { partnerItems } from '@/utils/partner-items'
 
@@ -7,30 +9,18 @@ import { CategoryItem } from './components/category-item'
 import { PartnerItem } from './components/partner-item'
 import { ProductItem } from './components/product-item'
 
-export default function Home() {
-  const bestSellers = [
-    {
-      id: 1,
-      image: '/product-01.svg',
-      name: 'Nike Therma FIT Headed',
-      description: "Men's Fleece Shacket",
-      price: 490,
+export type Product = typeof productTable.$inferSelect & {
+  variants: (typeof productVariantTable.$inferSelect)[]
+}
+
+export default async function Home() {
+  const bestSellers: Product[] = await db.query.productTable.findMany({
+    with: {
+      variants: true,
     },
-    {
-      id: 2,
-      image: '/product-02.svg',
-      name: 'Nike Therma FIT Headed',
-      description: "Men's Fleece Shacket",
-      price: 749,
-    },
-    {
-      id: 3,
-      image: '/product-03.svg',
-      name: 'Nike Therma FIT Headed',
-      description: "Men's Fleece Shacket",
-      price: 490,
-    },
-  ]
+  })
+  console.log(bestSellers)
+
   return (
     <div className="flex flex-col items-center">
       {/* BANNER */}
@@ -49,9 +39,9 @@ export default function Home() {
       </div>
 
       {/* Best sellers */}
-      <div className="mt-15 flex w-full flex-col gap-6 pl-5">
-        <h2 className="text-left font-semibold">Mais vendidos</h2>
-        <div className="flex w-full gap-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+      <div className="mt-15 flex w-full flex-col gap-6">
+        <h2 className="px-5 text-left font-semibold">Mais vendidos</h2>
+        <div className="flex w-full gap-6 overflow-x-scroll pl-5 [&::-webkit-scrollbar]:hidden">
           {bestSellers.map((product) => {
             return <ProductItem key={product.id} product={product} />
           })}
@@ -73,9 +63,9 @@ export default function Home() {
       </div>
 
       {/* NEW PRODUCTS */}
-      <div className="flex w-full flex-col gap-6 py-15 pl-5">
-        <h2 className="text-left font-semibold">Novos produtos</h2>
-        <div className="flex w-full gap-6 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+      <div className="flex w-full flex-col gap-6 px-0 py-15">
+        <h2 className="px-5 text-left font-semibold">Novos produtos</h2>
+        <div className="flex w-full gap-6 overflow-x-scroll pl-5 [&::-webkit-scrollbar]:hidden">
           {bestSellers.map((product) => {
             return <ProductItem key={product.id} product={product} />
           })}
