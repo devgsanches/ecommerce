@@ -16,10 +16,10 @@ export function ProductItem({
 
   return (
     <Link
-      href={`/product/${firstVariant.slug}`}
+      href={`/product/${product.slug}`}
       className="flex w-full flex-col gap-6"
     >
-      <div className="">
+      <div>
         <Image
           src={firstVariant.imageUrl}
           alt={product.name}

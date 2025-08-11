@@ -19,7 +19,6 @@ export default async function Home() {
       variants: true,
     },
   })
-  console.log(bestSellers)
 
   return (
     <div className="flex flex-col items-center">
