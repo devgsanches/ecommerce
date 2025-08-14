@@ -1,14 +1,17 @@
 'use client'
 
-import { Minus, Plus } from 'lucide-react'
+import { Minus, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-export default function QuantitySelector() {
+export default function QuantitySelector({ bag }: { bag?: boolean }) {
   const [quantity, setQuantity] = useState(1)
 
   function handleMinus() {
+    if (bag) {
+      return
+    }
     if (quantity === 1) return
 
     setQuantity((prev) => prev - 1)
@@ -19,10 +22,10 @@ export default function QuantitySelector() {
   }
   return (
     <div className="space-y-5">
-      <p className="font-medium">Quantidade</p>
+      {!bag && <p className="font-medium">Quantidade</p>}
       <div className="flex max-w-[7rem] items-center rounded-lg border border-[#F1F1F1]">
         <Button variant={'ghost'} onClick={() => handleMinus()}>
-          <Minus size={20} />
+          {bag ? <Trash2 size={20} /> : <Minus size={20} />}
         </Button>
 
         <p className="min-w-[30px] text-center text-lg font-medium">

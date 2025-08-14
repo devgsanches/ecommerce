@@ -2,7 +2,6 @@ import Image from 'next/image'
 
 import { db } from '@/db'
 import { productTable, type productVariantTable } from '@/db/schema'
-import { categoryItems } from '@/utils/category-items'
 import { partnerItems } from '@/utils/partner-items'
 
 import { CategoryItem } from './components/category-item'
@@ -19,6 +18,8 @@ export default async function Home() {
       variants: true,
     },
   })
+
+  const categoryItems = await db.query.categoryTable.findMany({})
 
   return (
     <div className="flex flex-col items-center">

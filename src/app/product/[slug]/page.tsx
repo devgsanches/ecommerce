@@ -1,14 +1,14 @@
 import { eq } from 'drizzle-orm'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import { ProductItem } from '@/app/components/product-item'
 import { Button } from '@/components/ui/button'
 import { db } from '@/db'
 import { productTable } from '@/db/schema'
-import { formatCurrency } from '@/utils/formatCurrency'
 
+import { ProductVariantDetails } from '../components/productVariantDetails'
 import QuantitySelector from '../components/quantitySelector'
-import { VariantListing } from '../components/variantListing'
 
 export default async function ProductPage({
   params,
@@ -38,22 +38,9 @@ export default async function ProductPage({
 
   return (
     <>
-      {/* PRODUCT IMAGE */}
+      {/* PRODUCT IMAGE AND PRODUCT DETAILS */}
       <div className="w-full space-y-9">
-        <VariantListing product={product} />
-
-        {/* PRODUCT DETAILS */}
-        <div className="space-y-4 px-5">
-          <div className="space-y-1">
-            <h2 className="text-lg font-semibold">{product?.name}</h2>
-            <p className="text-sm font-medium text-[#656565]">
-              {product?.description}
-            </p>
-          </div>
-          <p className="text-lg font-semibold">
-            {formatCurrency(product?.variants[0].priceInCents)}
-          </p>
-        </div>
+        <ProductVariantDetails product={product} />
 
         {/* QUANTITY SELECTOR */}
         <div className="px-5">
@@ -69,13 +56,21 @@ export default async function ProductPage({
           >
             Adicionar à sacola
           </Button>
-          <Button className="w-full rounded-full bg-[#5131E8]" size={'lg'}>
-            Comprar agora
+
+          <Button
+            className="w-full rounded-full bg-[#5131E8]"
+            size={'lg'}
+            asChild
+          >
+            <Link href="/identification">Comprar agora</Link>
           </Button>
         </div>
 
+        {/* DESCRIPTION */}
         <div className="px-5">
-          <p className="text-justify text-sm">{product?.description}</p>
+          <p className="text-sm font-medium text-[#656565]">
+            {product.description}
+          </p>
         </div>
 
         {/* You may also like */}

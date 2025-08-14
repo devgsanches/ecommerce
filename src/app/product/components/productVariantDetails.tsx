@@ -1,32 +1,32 @@
 'use client'
 
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 import { useState } from 'react'
 
 import type { Product } from '@/app/page'
 import type { productVariantTable } from '@/db/schema'
+import { formatCurrency } from '@/utils/formatCurrency'
 
 type ProductVariant = typeof productVariantTable.$inferSelect
 
-export function VariantListing({
+export function ProductVariantDetails({
   product,
 }: {
   product: Product & { variants: ProductVariant[] }
 }) {
-  const [variantDefault] = useState<number>(0)
-  const [variantProduct, setVariantProduct] = useState<ProductVariant>(
-    product.variants[variantDefault],
-  )
+  const [variantProduct, setVariantProduct] = useState<number>(0)
 
   function handleVariantChange(index: number) {
-    setVariantProduct(product.variants[index])
+    setVariantProduct(index)
+    redirect(`/product/${product.slug}?variant=${product.variants[index].slug}`)
   }
 
   return (
     <>
       <Image
-        src={variantProduct.imageUrl}
-        alt={variantProduct.name}
+        src={product.variants[variantProduct].imageUrl}
+        alt={product.variants[variantProduct].name}
         width={365}
         height={460}
         className="h-full w-full rounded-3xl object-cover px-3.5"
@@ -47,6 +47,17 @@ export function VariantListing({
             />
           )
         })}
+      </div>
+      <div className="space-y-4 px-5">
+        <div className="space-y-1">
+          <h2 className="text-lg font-semibold">{product?.name}</h2>
+          <p className="text-sm font-medium text-[#656565]">
+            {product.variants[variantProduct].color}
+          </p>
+        </div>
+        <p className="text-lg font-semibold">
+          {formatCurrency(product.variants[variantProduct].priceInCents)}
+        </p>
       </div>
     </>
   )

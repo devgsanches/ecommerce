@@ -17,7 +17,7 @@ export function ProductItem({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="flex w-full flex-col gap-6"
+      className={`flex w-full flex-col gap-6`}
     >
       <div>
         <Image
@@ -25,14 +25,18 @@ export function ProductItem({
           alt={product.name}
           width={200}
           height={200}
-          className="rounded-3xl"
+          className={`max-w-[12.5rem] rounded-3xl`}
         />
       </div>
 
       <div className="flex min-h-[4.125rem] flex-col gap-6">
         <div className="flex flex-col gap-1">
           <p className="text-sm font-medium">{product.name}</p>
-          <p className="w-[12.5rem] truncate text-sm font-medium text-[#656565]">
+          <p
+            className={
+              'w-[12.5rem] truncate text-sm font-medium text-[#656565]'
+            }
+          >
             {product.description}
           </p>
         </div>

@@ -1,16 +1,11 @@
-import {
-  AlignJustify,
-  House,
-  LogIn,
-  LogOut,
-  ShoppingBag,
-  Truck,
-} from 'lucide-react'
+'use client'
+
+import { House, LogIn, LogOut, ShoppingBag, Truck } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { authClient } from '@/lib/auth-client'
-import { categoryItems } from '@/utils/category-items'
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
@@ -20,12 +15,34 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '../ui/sheet'
+
+interface Category {
+  id: string
+  name: string
+}
 
 export function SidebarContent() {
   const { data: session } = authClient.useSession()
   const router = useRouter()
+  const [categories, setCategories] = useState<Category[]>([])
+  const pathname = usePathname()
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await fetch('/api/categories')
+        if (response.ok) {
+          const data = await response.json()
+          setCategories(data)
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      }
+    }
+
+    fetchCategories()
+  }, [])
 
   async function handleSignOut() {
     await authClient.signOut({
@@ -39,11 +56,6 @@ export function SidebarContent() {
 
   return (
     <>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon">
-          <AlignJustify color="#656565" strokeWidth={1.66667} />
-        </Button>
-      </SheetTrigger>
       <SheetContent className="w-[85%] px-5">
         <SheetHeader className="px-0 pt-6">
           <SheetTitle>Menu</SheetTitle>
@@ -54,8 +66,8 @@ export function SidebarContent() {
                 <Avatar className="h-12 w-12">
                   <AvatarImage src={session.user.image ?? ''} />
                   <AvatarFallback className="bg-[#007981] text-white uppercase">
-                    {session.user.name.split('')[0][0]}
-                    {session.user.name.split('')[1][0]}
+                    {session.user.name?.split(' ')[0]?.[0]}
+                    {session.user.name?.split(' ')[1]?.[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -84,16 +96,33 @@ export function SidebarContent() {
           )}
         </SheetHeader>
         <div className="flex flex-col border-b pb-6">
-          <Button
-            className="flex items-center justify-start gap-3"
-            variant="ghost"
-            asChild
-          >
-            <Link href="/">
-              <House size={16} />
-              Início
-            </Link>
-          </Button>
+          <div>
+            {pathname === '/' ? (
+              <SheetClose asChild>
+                <Button
+                  className="flex w-full items-center justify-start gap-3"
+                  variant="ghost"
+                >
+                  <House size={16} />
+                  Início
+                </Button>
+              </SheetClose>
+            ) : (
+              <SheetClose asChild>
+                <Button
+                  className="flex items-center justify-start gap-3"
+                  variant="ghost"
+                  asChild
+                >
+                  <Link href="/">
+                    <House size={16} />
+                    Início
+                  </Link>
+                </Button>
+              </SheetClose>
+            )}
+          </div>
+
           <Button
             className="flex items-center justify-start gap-3"
             variant="ghost"
@@ -117,7 +146,7 @@ export function SidebarContent() {
         </div>
 
         <div className={session?.user ? 'w-full border-b pb-6' : ''}>
-          {categoryItems.map((category) => {
+          {categories.map((category) => {
             return (
               <p key={category.id} className="p-4 text-sm font-medium">
                 {category.name}
