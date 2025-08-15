@@ -7,13 +7,7 @@ import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
 
 import { Button } from '../ui/button'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '../ui/sheet'
+import { Sheet, SheetTrigger } from '../ui/sheet'
 import { BagContent } from './bag-content'
 import { SidebarContent } from './sidebar-content'
 
