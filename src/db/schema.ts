@@ -16,6 +16,7 @@ export const user = pgTable('user', {
     .$defaultFn(() => false)
     .notNull(),
   image: text('image'),
+
   createdAt: timestamp('created_at')
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
@@ -23,6 +24,14 @@ export const user = pgTable('user', {
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),
 })
+
+export const userRelations = relations(user, ({ many, one }) => ({
+  shippingAddresses: many(shippingAddress),
+  cart: one(cart, {
+    fields: [user.id],
+    references: [cart.userId],
+  }),
+}))
 
 export const session = pgTable('session', {
   id: text('id').primaryKey(),
