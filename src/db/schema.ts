@@ -129,7 +129,7 @@ export const productVariantRelations = relations(
 
 // SEMPRE QUE EU DECLARAR UMA FOREIGN KEY, EU TENHO QUE CRIAR UM RELACIONAMENTO, PARA QUE O DRIZZLE ENTENDA QUE EXISTE ESSA REFERÊNCIA E POSSA FAZER AS QUERYS (JOIN'S)
 
-export const shippingAddressTable = pgTable('shipping_address', {
+export const shippingAddress = pgTable('shipping_address', {
   id: uuid().primaryKey().defaultRandom(),
   userId: text('user_id')
     .notNull()
@@ -150,15 +150,62 @@ export const shippingAddressTable = pgTable('shipping_address', {
 })
 
 export const shippingAddressRelations = relations(
-  shippingAddressTable,
+  shippingAddress,
   ({ one }) => ({
     user: one(user, {
-      fields: [shippingAddressTable.userId],
+      fields: [shippingAddress.userId],
       references: [user.id],
     }),
-    // cart: one(cartTable, {
-    //   fields: [shippingAddressTable.id],
-    //   references: [cartTable.shippingAddressId],
-    // }),
+    cart: one(cart, {
+      fields: [shippingAddress.id],
+      references: [cart.shippingAddressId],
+    }),
   }),
 )
+
+export const cart = pgTable('cart', {
+  id: uuid().primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  shippingAddressId: uuid('shipping_address_id').references(
+    () => shippingAddress.id,
+    { onDelete: 'set null' },
+  ),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
+export const cartRelations = relations(cart, ({ one, many }) => ({
+  user: one(user, {
+    fields: [cart.userId],
+    references: [user.id],
+  }),
+  shippingAddress: one(shippingAddress, {
+    fields: [cart.shippingAddressId],
+    references: [shippingAddress.id],
+  }),
+  items: many(cartItem),
+}))
+
+export const cartItem = pgTable('cart_item', {
+  id: uuid().primaryKey().defaultRandom(),
+  cartId: uuid('cart_id')
+    .notNull()
+    .references(() => cart.id, { onDelete: 'cascade' }),
+  productVariantId: uuid('product_variant_id')
+    .notNull()
+    .references(() => productVariantTable.id, { onDelete: 'cascade' }),
+  quantity: integer('quantity').notNull().default(1),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
+export const cartItemRelations = relations(cartItem, ({ one }) => ({
+  cart: one(cart, {
+    fields: [cartItem.cartId],
+    references: [cart.id],
+  }),
+  productVariant: one(productVariantTable, {
+    fields: [cartItem.productVariantId],
+    references: [productVariantTable.id],
+  }),
+}))
