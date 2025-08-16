@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { getCart } from '@/actions/get-cart'
 import { db } from '@/db'
 import { productTable, type productVariantTable } from '@/db/schema'
 import { partnerItems } from '@/utils/partner-items'

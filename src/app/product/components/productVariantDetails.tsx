@@ -2,10 +2,11 @@
 
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import type { Product } from '@/app/page'
 import type { productVariantTable } from '@/db/schema'
+import { useProductVariant } from '@/hooks/useProductVariant'
 import { formatCurrency } from '@/utils/formatCurrency'
 
 type ProductVariant = typeof productVariantTable.$inferSelect
@@ -16,6 +17,15 @@ export function ProductVariantDetails({
   product: Product & { variants: ProductVariant[] }
 }) {
   const [variantProduct, setVariantProduct] = useState<number>(0)
+
+  const { setProductVariant } = useProductVariant()
+
+  useEffect(() => {
+    setProductVariant({
+      ...product.variants[variantProduct],
+      quantity: 1,
+    })
+  }, [variantProduct])
 
   function handleVariantChange(index: number) {
     setVariantProduct(index)

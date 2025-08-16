@@ -13,6 +13,7 @@ import { SidebarContent } from './sidebar-content'
 
 export function Header() {
   const { data: session } = authClient.useSession()
+
   return (
     <header className="flex items-center justify-between bg-white px-5 py-6">
       <Link href="/">

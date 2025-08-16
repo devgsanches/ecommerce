@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { getCart } from '@/actions/get-cart'
 import { ProductItem } from '@/app/components/product-item'
-import { Button } from '@/components/ui/button'
 import { db } from '@/db'
 import { productTable } from '@/db/schema'
 
+import { Buttons } from '../components/buttons'
 import { ProductVariantDetails } from '../components/productVariantDetails'
 import QuantitySelector from '../components/quantitySelector'
 
@@ -36,6 +36,8 @@ export default async function ProductPage({
     return notFound()
   }
 
+  const cartWithItems = await getCart()
+
   return (
     <>
       {/* PRODUCT IMAGE AND PRODUCT DETAILS */}
@@ -44,26 +46,12 @@ export default async function ProductPage({
 
         {/* QUANTITY SELECTOR */}
         <div className="px-5">
-          <QuantitySelector />
+          <QuantitySelector bag={false} quantity={1} />
         </div>
 
         {/* BUTTONS */}
         <div className="space-y-3 px-5">
-          <Button
-            className="w-full rounded-full text-sm font-semibold"
-            variant={'outline'}
-            size={'lg'}
-          >
-            Adicionar à sacola
-          </Button>
-
-          <Button
-            className="w-full rounded-full bg-[#5131E8]"
-            size={'lg'}
-            asChild
-          >
-            <Link href="/identification">Comprar agora</Link>
-          </Button>
+          <Buttons />
         </div>
 
         {/* DESCRIPTION */}
