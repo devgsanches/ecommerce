@@ -52,7 +52,7 @@ export function ProductVariantDetails({
               alt={variant.name}
               width={68}
               height={68}
-              className="rounded-xl"
+              className={`rounded-xl ${variantProduct === index ? 'border-2 border-gray-500' : ''}`}
               onClick={() => handleVariantChange(index)}
             />
           )

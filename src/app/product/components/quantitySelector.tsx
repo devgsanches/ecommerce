@@ -1,6 +1,7 @@
 'use client'
 
 import { Minus, Plus, Trash2 } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -24,6 +25,7 @@ export default function QuantitySelector({
   const [quantityBag, setQuantityBag] = useState(quantity)
   const [quantityState, setQuantityState] = useState(1)
   const [isUpdating, setIsUpdating] = useState(false)
+  const pathname = usePathname()
 
   // Sincroniza o estado local quando a prop quantity mudar
   useEffect(() => {
@@ -49,7 +51,7 @@ export default function QuantitySelector({
         await updateCartItem({ cartItemId, quantity: newQuantity })
 
         // Atualiza o contexto com os novos dados
-        const cartWithItems = await getCart()
+        const cartWithItems = await getCart(pathname)
         setItemsCart({
           items: cartWithItems.items,
           totalPriceInCents: cartWithItems.totalPriceInCents,
@@ -89,7 +91,7 @@ export default function QuantitySelector({
         await updateCartItem({ cartItemId, quantity: newQuantity })
 
         // Atualiza o contexto com os novos dados
-        const cartWithItems = await getCart()
+        const cartWithItems = await getCart(pathname)
         setItemsCart({
           items: cartWithItems.items,
           totalPriceInCents: cartWithItems.totalPriceInCents,
@@ -126,11 +128,13 @@ export default function QuantitySelector({
       await updateCartItem({ cartItemId, quantity: 0 })
 
       // Atualiza o contexto com os novos dados
-      const cartWithItems = await getCart()
-      setItemsCart({
-        items: cartWithItems.items,
-        totalPriceInCents: cartWithItems.totalPriceInCents,
-      })
+      const cartWithItems = await getCart(pathname)
+      if (cartWithItems) {
+        setItemsCart({
+          items: cartWithItems.items,
+          totalPriceInCents: cartWithItems.totalPriceInCents,
+        })
+      }
 
       toast.success('Item removido da sacola!')
     } catch (error) {

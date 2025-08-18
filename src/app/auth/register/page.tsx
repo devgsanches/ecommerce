@@ -1,9 +1,9 @@
 import { ShoppingBag } from 'lucide-react'
 import Image from 'next/image'
 
-import { LoginForm } from '@/components/login-form'
+import { RegisterForm } from '@/components/ui/register-form'
 
-export default function Auth() {
+export default function Register() {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="bg-muted relative hidden lg:block">
@@ -27,7 +27,7 @@ export default function Auth() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            <RegisterForm />
           </div>
         </div>
       </div>

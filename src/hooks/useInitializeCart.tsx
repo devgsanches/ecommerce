@@ -1,5 +1,6 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { getCart } from '@/actions/get-cart'
@@ -9,6 +10,7 @@ export const useInitializeCart = () => {
   const { setItemsCart } = useItemsCart()
   const [isLoading, setIsLoading] = useState(true)
   const [hasInitialized, setHasInitialized] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     // Só inicializa se ainda não foi inicializado
@@ -19,7 +21,7 @@ export const useInitializeCart = () => {
 
     const initializeCart = async () => {
       try {
-        const cartWithItems = await getCart()
+        const cartWithItems = await getCart(pathname)
         console.log('useInitializeCart - dados carregados:', cartWithItems)
         setItemsCart({
           items: cartWithItems.items,
@@ -36,7 +38,7 @@ export const useInitializeCart = () => {
     }
 
     initializeCart()
-  }, [setItemsCart, hasInitialized])
+  }, [setItemsCart, hasInitialized, pathname])
 
   return { isLoading }
 }

@@ -1,8 +1,9 @@
 import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 
-import { getCart } from '@/actions/get-cart'
 import { ProductItem } from '@/app/components/product-item'
+import { Footer } from '@/components/common/footer'
+import { Header } from '@/components/common/header'
 import { db } from '@/db'
 import { productTable } from '@/db/schema'
 
@@ -36,10 +37,9 @@ export default async function ProductPage({
     return notFound()
   }
 
-  const cartWithItems = await getCart()
-
   return (
     <>
+      <Header />
       {/* PRODUCT IMAGE AND PRODUCT DETAILS */}
       <div className="w-full space-y-9">
         <ProductVariantDetails product={product} />
@@ -71,6 +71,7 @@ export default async function ProductPage({
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

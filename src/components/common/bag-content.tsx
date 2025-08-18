@@ -1,4 +1,5 @@
 import { ShoppingBag } from 'lucide-react'
+import Link from 'next/link'
 
 import { useItemsCart } from '@/hooks/ItemsCart'
 import { useInitializeCart } from '@/hooks/useInitializeCart'
@@ -62,14 +63,31 @@ export function BagContent() {
                     </div>
                     <Separator />
                   </div>
+                  <div className="flex flex-col items-center">
+                    <div className="flex w-full justify-between gap-3 px-5 pb-3 text-sm font-medium">
+                      <p>Transporte e Manuseio</p>
+                      <p className="text-[#656565]">Grátis</p>
+                    </div>
+                    <Separator />
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="flex w-full justify-between gap-3 px-5 pb-3 text-sm font-medium">
+                      <p>Total</p>
+                      <p className="text-[#656565]">
+                        {formatCurrency(itemsCart.totalPriceInCents)}
+                      </p>
+                    </div>
+                    <Separator />
+                  </div>
                   {/* BUTTONS PAYMENT */}
-                  <div className="w-full px-5">
+                  <div className="w-full px-5 pb-4">
                     <Button
                       variant="default"
                       size={'lg'}
                       className="w-full rounded-full bg-[#5131E8]"
+                      asChild
                     >
-                      Finalizar a compra
+                      <Link href="/identification"> Finalizar a compra</Link>
                     </Button>
                     <Button
                       variant={'link'}

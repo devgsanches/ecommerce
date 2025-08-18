@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { toast } from 'sonner'
 
 import { addProductToCart } from '@/actions/add-cart-product'
@@ -12,6 +13,7 @@ import { useProductVariant } from '@/hooks/useProductVariant'
 export function Buttons() {
   const { productVariant } = useProductVariant()
   const { setItemsCart } = useItemsCart()
+  const pathname = usePathname()
 
   async function handleAddToCart() {
     if (!productVariant) return
@@ -20,7 +22,7 @@ export function Buttons() {
       productVariantId: productVariant.id,
       quantity: productVariant.quantity,
     })
-    const cartWithItems = await getCart()
+    const cartWithItems = await getCart(pathname)
     setItemsCart({
       items: cartWithItems.items,
       totalPriceInCents: cartWithItems.totalPriceInCents,

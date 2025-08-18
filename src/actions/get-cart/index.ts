@@ -6,13 +6,38 @@ import { db } from '@/db'
 import { cart as cartTable } from '@/db/schema'
 import { auth } from '@/lib/auth'
 
-export const getCart = async () => {
+export const getCart = async (pathname: string) => {
+  // Se não estiver na página de produto, página inicial, ou páginas de checkout, retorna carrinho vazio
+  if (
+    !pathname.startsWith('/product/') &&
+    pathname !== '/' &&
+    !pathname.startsWith('/identification') &&
+    !pathname.startsWith('/payment')
+  ) {
+    return {
+      id: '',
+      userId: '',
+      shippingAddressId: null,
+      createdAt: new Date(),
+      items: [],
+      totalPriceInCents: 0,
+    }
+  }
+
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   if (!session?.user) {
-    throw new Error('Unauthorized')
+    // Se não há sessão, retorna carrinho vazio
+    return {
+      id: '',
+      userId: '',
+      shippingAddressId: null,
+      createdAt: new Date(),
+      items: [],
+      totalPriceInCents: 0,
+    }
   }
 
   const cart = await db.query.cart.findFirst({

@@ -3,8 +3,6 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Poppins } from 'next/font/google'
 
-import { Footer } from '@/components/common/footer'
-import { Header } from '@/components/common/header'
 import { Toaster } from '@/components/ui/sonner'
 import { ItemsCartProvider } from '@/providers/ItemsCart'
 import { ProductVariantProvider } from '@/providers/ProductVariant'
@@ -42,11 +40,10 @@ export default async function RootLayout({
       >
         <ProductVariantProvider>
           <ItemsCartProvider>
-            <Header />
             <div className="flex-1">{children}</div>
           </ItemsCartProvider>
         </ProductVariantProvider>
-        <Footer />
+
         <Toaster richColors />
       </body>
     </html>
