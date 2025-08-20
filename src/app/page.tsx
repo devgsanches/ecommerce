@@ -1,10 +1,12 @@
+import { headers } from 'next/headers'
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 
-import { getCart } from '@/actions/get-cart'
 import { Footer } from '@/components/common/footer'
 import { Header } from '@/components/common/header'
 import { db } from '@/db'
 import { productTable, type productVariantTable } from '@/db/schema'
+import { auth } from '@/lib/auth'
 import { partnerItems } from '@/utils/partner-items'
 
 import { CategoryItem } from './components/category-item'
@@ -16,6 +18,16 @@ export type Product = typeof productTable.$inferSelect & {
 }
 
 export default async function Home() {
+  // Verifica se o usuário está autenticado
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  // Se não estiver autenticado, redireciona para login
+  if (!session?.user) {
+    redirect('/auth')
+  }
+
   const bestSellers: Product[] = await db.query.productTable.findMany({
     with: {
       variants: true,

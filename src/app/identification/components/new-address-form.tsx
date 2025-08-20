@@ -2,9 +2,11 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { addShippingAddress } from '@/actions/add-shipping-address'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,6 +22,9 @@ export function NewAddressForm({
 }: {
   setIdentification: (identification: boolean) => void
 }) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
   const formSchema = z.object({
     email: z.email('E-mail inválido.'),
     firstName: z.string().min(3, 'Nome inválido.'),
@@ -29,7 +34,7 @@ export function NewAddressForm({
     cep: z.string().min(8, 'CEP inválido.'),
     address: z.string().min(3, 'Endereço inválido.'),
     number: z.string().min(1, 'Número inválido.'),
-    complement: z.string().min(1, 'Complemento inválido.'),
+    complement: z.string().optional(),
     neighborhood: z.string().min(3, 'Bairro inválido.'),
     city: z.string().min(3, 'Cidade inválida.'),
     state: z.string().min(2, 'Estado inválido.'),
@@ -55,15 +60,50 @@ export function NewAddressForm({
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    router.push('/payment')
-    setIdentification(true)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setIsLoading(true)
+      setError(null)
+
+      const shippingAddress = await addShippingAddress(values)
+
+      // Salvar o endereço no localStorage para usar na página de payment
+      localStorage.setItem(
+        'selectedShippingAddress',
+        JSON.stringify(shippingAddress),
+      )
+
+      setIdentification(true)
+      router.push('/payment')
+    } catch (error) {
+      console.error('Erro ao adicionar endereço:', error)
+      if (error instanceof Error) {
+        if (error.message === 'Unauthorized') {
+          setError(
+            'Você precisa estar logado para adicionar um endereço de entrega',
+          )
+        } else {
+          setError(error.message)
+        }
+      } else {
+        setError('Erro ao adicionar endereço de entrega')
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <h3 className="font-semibold">Adicionar novo</h3>
+
+        {error && (
+          <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+
         <FormField
           control={form.control}
           name="email"
@@ -221,8 +261,9 @@ export function NewAddressForm({
           className="h-12.5 w-full rounded-full bg-[#5131E8]"
           size="lg"
           type="submit"
+          disabled={isLoading}
         >
-          Continuar com o pagamento
+          {isLoading ? 'Salvando...' : 'Continuar com o pagamento'}
         </Button>
       </form>
     </Form>

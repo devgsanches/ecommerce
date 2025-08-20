@@ -20,6 +20,7 @@ import {
 interface Category {
   id: string
   name: string
+  slug: string
 }
 
 export function SidebarContent() {
@@ -128,29 +129,25 @@ export function SidebarContent() {
             variant="ghost"
             asChild
           >
-            <Link href="/">
+            <Link href="/orders">
               <Truck size={16} />
               Meus Pedidos
             </Link>
           </Button>
-          <Button
-            className="flex items-center justify-start gap-3"
-            variant="ghost"
-            asChild
-          >
-            <Link href="/">
-              <ShoppingBag size={16} />
-              Sacola
-            </Link>
-          </Button>
         </div>
 
-        <div className={session?.user ? 'w-full border-b pb-6' : ''}>
+        <div
+          className={session?.user ? 'flex w-full flex-col border-b pb-6' : ''}
+        >
           {categories.map((category) => {
             return (
-              <p key={category.id} className="p-4 text-sm font-medium">
+              <Link
+                key={category.id}
+                href={`/category?name=${category.slug}`}
+                className="p-4 text-sm font-medium"
+              >
                 {category.name}
-              </p>
+              </Link>
             )
           })}
         </div>

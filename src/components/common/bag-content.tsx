@@ -9,6 +9,7 @@ import { Button } from '../ui/button'
 import { ScrollArea } from '../ui/scroll-area'
 import { Separator } from '../ui/separator'
 import {
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -89,13 +90,15 @@ export function BagContent() {
                     >
                       <Link href="/identification"> Finalizar a compra</Link>
                     </Button>
-                    <Button
-                      variant={'link'}
-                      size={'lg'}
-                      className="w-full text-black underline"
-                    >
-                      Continuar comprando
-                    </Button>
+                    <SheetClose asChild>
+                      <Button
+                        variant={'link'}
+                        size={'lg'}
+                        className="w-full text-black underline"
+                      >
+                        Continuar comprando
+                      </Button>
+                    </SheetClose>
                   </div>
                 </div>
               </div>
