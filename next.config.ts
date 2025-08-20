@@ -8,26 +8,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    turbo: {
-      rules: {
-        '*.css': {
-          loaders: ['@tailwindcss/postcss'],
-          as: '*.css',
-        },
-      },
-    },
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        path: false,
-      }
-    }
-    return config
-  },
 }
 
 export default nextConfig

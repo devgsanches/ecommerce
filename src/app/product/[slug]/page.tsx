@@ -14,9 +14,9 @@ import QuantitySelector from '../components/quantitySelector'
 export default async function ProductPage({
   params,
 }: {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }) {
   const { slug } = await params
 
